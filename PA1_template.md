@@ -7,9 +7,7 @@ output:
     keep_md: yes
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
 
 
 # Course project 1
@@ -23,7 +21,8 @@ The dataset is stored in a comma-separated-value (CSV) file and there are a tota
 
 ## Preliminary steps: Unzip and read the data
 It is assumed that the zip.file was already downloaded into the work directory.
-```{r read the data, echo=TRUE}
+
+```r
 #unzip
 unzip("repdata_data_activity.zip")
 #read and filter NA values
@@ -32,45 +31,69 @@ activity <- read.csv("activity.csv", header=T, sep=',')
 
 ## 1. Mean total number of steps taken per day
 1.1 Plot the histogram of the number of steps taken per day
-```{r compute and plot the steps taken per day, echo=TRUE}
+
+```r
 library(ggplot2)
 stepsperday <- aggregate(steps ~ date, data=activity, FUN=sum, na.rm=T) #aggregate
 ggplot(data=stepsperday, aes(steps)) + geom_histogram(binwidth = 1000) + xlab('Total steps per day') + ylab('Count of days') + ggtitle('Total number of steps taken per day') #plot
-dev.copy(png, file="plot1.png") #create file
+```
 
-stepsmean <- mean(stepsperday$steps, na.rm = T) #compute mean
-stepsmedian <- median(stepsperday$steps, na.rm = T) #compute median
+![](PA1_template_files/figure-html/compute and plot the steps taken per day-1.png)<!-- -->
+
+```r
+dev.copy(png, file="plot1.png") #create file
+```
 
 ```
+## png 
+##   3
+```
+
+```r
+stepsmean <- mean(stepsperday$steps, na.rm = T) #compute mean
+stepsmedian <- median(stepsperday$steps, na.rm = T) #compute median
+```
 1.2 Compute the mean and median number of steps taken per day:
-The mean number of steps taken per day is: `r stepsmean`.
-The median number of steps taken per day is: `r stepsmedian`.
+The mean number of steps taken per day is: 1.0766189\times 10^{4}.
+The median number of steps taken per day is: 10765.
 
 ## 2. Average daily activity pattern
 2.1 Prepare the data set for the time series
-```{r compute and plot the time series, echo=TRUE}
+
+```r
 stepsperintv <- aggregate(steps ~ interval, data=activity, FUN=mean, na.rm=T) #aggregate
 plot(stepsperintv, type = "l", xlab = "Time of day, 5-min interval", 
     ylab = "Average number of steps taken", main = "Average daily activity pattern")
+```
+
+![](PA1_template_files/figure-html/compute and plot the time series-1.png)<!-- -->
+
+```r
 dev.copy(png, file="plot2.png") #create file
 ```
-2.2 Compute the 5-min intervAL with the maximum number of steps
-```{r compute the 5-min interval with the maximum number of steps, echo=TRUE}
-max_steps <- stepsperintv[stepsperintv$steps==max(stepsperintv$steps),]
 
 ```
-The 5-minute interval with the maximum number of steps is: `r max_steps$interval`.
+## png 
+##   4
+```
+2.2 Compute the 5-min intervAL with the maximum number of steps
+
+```r
+max_steps <- stepsperintv[stepsperintv$steps==max(stepsperintv$steps),]
+```
+The 5-minute interval with the maximum number of steps is: 835.
 
 ## 3. Imputting missing values
 3.1 Compute and report the total number of missing values in the dataset.
-```{r compute the number of missing values, echo=TRUE}
-missingvalues <- sum(is.na(activity))
 
+```r
+missingvalues <- sum(is.na(activity))
 ```
-There are `r missingvalues` missing values in the source dataset.
+There are 2304 missing values in the source dataset.
 
 3.2 Fill the missing values in the dataset by using the mean for that interval.
-```{r fill the missing values and create a new dataset, echo=TRUE}
+
+```r
 completed <- activity #create a new data set by copying the source
 #loop through the records and complete where missing with the interval data
 for (i in 1:nrow(completed)) {
@@ -78,26 +101,39 @@ for (i in 1:nrow(completed)) {
 }
 ```
 3.3 Plot a histogramm based on the completed data
-```{r compute and plot the steps taken per day based on the completed data, echo=TRUE}
+
+```r
 cstepsperday <- aggregate(steps ~ date, data=completed, FUN=sum, na.rm=T) #aggregate
 ggplot(data=cstepsperday, aes(steps)) + geom_histogram(binwidth = 1000) + xlab('Total steps per day') + ylab('Count of days') + ggtitle('Total number of steps taken per day (completed data)') #plot
-dev.copy(png, file="plot3.png") #create file
+```
 
+![](PA1_template_files/figure-html/compute and plot the steps taken per day based on the completed data-1.png)<!-- -->
+
+```r
+dev.copy(png, file="plot3.png") #create file
+```
+
+```
+## png 
+##   5
+```
+
+```r
 cstepsmean <- mean(cstepsperday$steps, na.rm = T) #compute mean
 cstepsmedian <- median(cstepsperday$steps, na.rm = T) #compute median
-
 ```
 3.4 Compute the mean and median number of steps taken per day, based on the completed data:
 
-The mean number of steps taken per day is: `r cstepsmean`.
-The median number of steps taken per day is: `r cstepsmedian`.
+The mean number of steps taken per day is: 1.0766189\times 10^{4}.
+The median number of steps taken per day is: 1.0766189\times 10^{4}.
 
 Compared to the data set before completing the data, the mean number of steps has remained the same, and there is a small increase in the median.
 In the completetd dataset, the mean and the median are equal.
 
 ## 4. Differences of activity patterns between weekdays and weekends.
 4.1 Compute the weekday and assign a code indicating whether weekday or weekend
-```{r compute the weekday and assign the weekpart code, echo=TRUE}
+
+```r
 activity$weekday <- weekdays(as.Date(activity$date)) #compute the weekday
 activity$wpart <- "weekday" #first assign value weekday to wpart code on all
 # then loop though dataset and change to weekend where saturday or sunday
@@ -109,14 +145,23 @@ for (i in 1:nrow(activity)) {
 }
 # and make it a factor
 activity$wpart <- as.factor(activity$wpart)
-
 ```
 4.2 then aggregate and plot
-```{r aggregate and plot, echo=TRUE}
+
+```r
 avgsteps <- aggregate(steps ~ interval+wpart, activity, mean) #aggregate data
 #then plot
 ggplot(data=avgsteps, aes(interval, steps)) + geom_line() +
 facet_wrap(~ wpart, ncol=1) + xlab("Timeline - 5-min interval") + ylab("Number of steps") + ggtitle('Difference in activity pattern (weekday / weekend)')
-dev.copy(png, file="plot4.png") #create file
+```
 
+![](PA1_template_files/figure-html/aggregate and plot-1.png)<!-- -->
+
+```r
+dev.copy(png, file="plot4.png") #create file
+```
+
+```
+## png 
+##   6
 ```
