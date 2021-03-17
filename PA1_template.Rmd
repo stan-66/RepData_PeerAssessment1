@@ -32,7 +32,7 @@ activity <- read.csv("activity.csv", header=T, sep=',')
 
 ## 1. Mean total number of steps taken per day
 1.1 Plot the histogram of the number of steps taken per day
-```{r compute and plot the steps taken per day, echo=TRUE}
+```{r histo1, echo=TRUE}
 library(ggplot2)
 stepsperday <- aggregate(steps ~ date, data=activity, FUN=sum, na.rm=T) #aggregate
 ggplot(data=stepsperday, aes(steps)) + geom_histogram(binwidth = 1000) + xlab('Total steps per day') + ylab('Count of days') + ggtitle('Total number of steps taken per day') #plot
@@ -48,7 +48,7 @@ The median number of steps taken per day is: `r stepsmedian`.
 
 ## 2. Average daily activity pattern
 2.1 Prepare the data set for the time series
-```{r compute and plot the time series, echo=TRUE}
+```{r timeseries1, echo=TRUE}
 stepsperintv <- aggregate(steps ~ interval, data=activity, FUN=mean, na.rm=T) #aggregate
 plot(stepsperintv, type = "l", xlab = "Time of day, 5-min interval", 
     ylab = "Average number of steps taken", main = "Average daily activity pattern")
@@ -78,7 +78,7 @@ for (i in 1:nrow(completed)) {
 }
 ```
 3.3 Plot a histogramm based on the completed data
-```{r compute and plot the steps taken per day based on the completed data, echo=TRUE}
+```{r histo2, echo=TRUE}
 cstepsperday <- aggregate(steps ~ date, data=completed, FUN=sum, na.rm=T) #aggregate
 ggplot(data=cstepsperday, aes(steps)) + geom_histogram(binwidth = 1000) + xlab('Total steps per day') + ylab('Count of days') + ggtitle('Total number of steps taken per day (completed data)') #plot
 dev.copy(png, file="plot3.png") #create file
@@ -112,7 +112,7 @@ activity$wpart <- as.factor(activity$wpart)
 
 ```
 4.2 then aggregate and plot
-```{r aggregate and plot, echo=TRUE}
+```{r timeseries2, echo=TRUE}
 avgsteps <- aggregate(steps ~ interval+wpart, activity, mean) #aggregate data
 #then plot
 ggplot(data=avgsteps, aes(interval, steps)) + geom_line() +

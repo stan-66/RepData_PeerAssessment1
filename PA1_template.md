@@ -18,7 +18,7 @@ The variables included in this dataset are:
 -interval: Identifier for the 5-minute interval in which measurement was taken
 
 The dataset is stored in a comma-separated-value (CSV) file and there are a total of 17,568 observations in this dataset.
-Test
+
 ## Preliminary steps: Unzip and read the data
 It is assumed that the zip.file was already downloaded into the work directory.
 
@@ -38,7 +38,7 @@ stepsperday <- aggregate(steps ~ date, data=activity, FUN=sum, na.rm=T) #aggrega
 ggplot(data=stepsperday, aes(steps)) + geom_histogram(binwidth = 1000) + xlab('Total steps per day') + ylab('Count of days') + ggtitle('Total number of steps taken per day') #plot
 ```
 
-![](PA1_template_files/figure-html/compute and plot the steps taken per day-1.png)<!-- -->
+![](PA1_template_files/figure-html/histo1-1.png)<!-- -->
 
 ```r
 dev.copy(png, file="plot1.png") #create file
@@ -66,7 +66,7 @@ plot(stepsperintv, type = "l", xlab = "Time of day, 5-min interval",
     ylab = "Average number of steps taken", main = "Average daily activity pattern")
 ```
 
-![](PA1_template_files/figure-html/compute and plot the time series-1.png)<!-- -->
+![](PA1_template_files/figure-html/timeseries1-1.png)<!-- -->
 
 ```r
 dev.copy(png, file="plot2.png") #create file
@@ -107,7 +107,7 @@ cstepsperday <- aggregate(steps ~ date, data=completed, FUN=sum, na.rm=T) #aggre
 ggplot(data=cstepsperday, aes(steps)) + geom_histogram(binwidth = 1000) + xlab('Total steps per day') + ylab('Count of days') + ggtitle('Total number of steps taken per day (completed data)') #plot
 ```
 
-![](PA1_template_files/figure-html/compute and plot the steps taken per day based on the completed data-1.png)<!-- -->
+![](PA1_template_files/figure-html/histo2-1.png)<!-- -->
 
 ```r
 dev.copy(png, file="plot3.png") #create file
@@ -155,7 +155,7 @@ ggplot(data=avgsteps, aes(interval, steps)) + geom_line() +
 facet_wrap(~ wpart, ncol=1) + xlab("Timeline - 5-min interval") + ylab("Number of steps") + ggtitle('Difference in activity pattern (weekday / weekend)')
 ```
 
-![](PA1_template_files/figure-html/aggregate and plot-1.png)<!-- -->
+![](PA1_template_files/figure-html/timeseries2-1.png)<!-- -->
 
 ```r
 dev.copy(png, file="plot4.png") #create file
